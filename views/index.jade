@@ -1,0 +1,29 @@
+extends layout
+
+block head-plus
+  script(src='/javascripts/index.js', type='text/javascript')
+
+block content
+  h1= title
+  div.div-calc
+    p Welcome to #{title}
+  hr
+  h3 Elements面板1
+  ul
+    li#li1(onmouseover="testEvent();")
+      a#a1(href='#',onclick="this.innerHTML='断点发生';") 测试断点
+    li#li2
+      a#a2(href='#') 测试动态样式
+    li#li3
+      a#a3.a-shadow(href='#') 测试停用css类
+
+  hr
+  h3 console面板
+  ul
+    li#li4
+      a#a4(href='#', onclick="testXML();") 测试XML请求
+  table
+    tr
+      td
+        p Test for 
+        p change raws

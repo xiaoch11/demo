@@ -1,0 +1,11 @@
+extends layout
+
+block head-plus
+  link(rel='stylesheet', href='/stylesheets/styleElement.css')
+  script(src='/javascripts/listElements.js', type='text/javascript')
+  script(src='/javascripts/list.js', type='text/javascript')
+
+block content
+  div#queryForm(style='margin:10px 0px')
+  div#table(style='margin: 20px 0px')
+  div#paginator

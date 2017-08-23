@@ -1,0 +1,67 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding: 10px 100px;
+}
+
+/* 布局 */
+.elem-2col-left {
+    float: left;
+    width: 20vw;
+}
+
+.elem-2col-right {
+    margin-left: 20vw;
+}
+
+/* 组件-sidebar */
+.elem-sidebar {
+    margin: auto;
+    margin-top: 10px;
+    width: 20vw;
+}
+
+.elem-sidebar-fixed {
+    position: fixed;
+    top: 10px;
+    width: 20vw;
+}
+
+.elem-sidebar-title {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.elem-sidebar-nav li {
+    list-style-type: none;
+    text-align: center;
+    margin: 5px;
+    cursor: pointer;
+    color: #ccc;
+    font-size: 0.6em;
+}
+
+.elem-sidebar-nav .active {
+    border-right: 2px solid black;
+    color: black;
+    font-size: 1em;
+}
+
+/* 样式 */
+.elem-page {
+    margin: 10px 30px;
+    height: 80vh;
+}
+
+.elem-page-header {
+    font-size: 1.5em;
+    border-bottom: 1px dotted #ccc;
+    margin-bottom: 10px;
+}
+
+.elem-page-center {
+    text-align: center;
+}

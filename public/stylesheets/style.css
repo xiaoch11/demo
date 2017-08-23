@@ -1,0 +1,28 @@
+body {
+  padding: 20px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: rgb(210, 103, 31);
+  /* box-shadow: 0 0 black; */
+  /* box-shadow: 10px 10px 5px 1px black; */
+}
+
+a {}
+
+a:hover {
+	color: green;
+}
+
+a:focus {
+	color: red;
+}
+
+.a-shadow {
+	text-shadow: 0 0 3px;
+}
+
+.div-calc {
+	height: calc(100% + 50px);
+}
