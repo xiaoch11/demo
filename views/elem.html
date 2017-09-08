@@ -2,23 +2,30 @@
 <head>
     <link rel='stylesheet', href='/stylesheets/elem.css'>
 </head>
-<body data-scrollSpy="spyDiv">
+<body>
     <div class="elem-2col-left">
-        <div class="elem-sidebar elem-sidebar-fixed">
+        <div class="elem-sidebar elem-sidebar-fixed" data-scrollSpy="spyDiv">
             <div class="elem-sidebar-title">导航菜单</div>
             <ul class="elem-sidebar-nav">
-                <li class="active" data-show="div1">1</li>
-                <li data-show="div2">2</li>
+                <li class="active" data-show="div1">1-拖拽</li>
+                <li data-show="div2">2-提示框</li>
             </ul>
         </div>
     </div>
     <div id="spyDiv" class="elem-2col-right">
         <div id="div1" class="elem-page">
-            <div class="elem-page-header">div1</div>
-            <div class="elem-page-center">div1</div>
+            <div class="elem-page-header">拖拽</div>
+            <div class="elem-page-content">
+                <div class="elem-boxSmall elem-dragItem"></div>
+            </div>
         </div>
         <div id="div2" class="elem-page">
-            <div class="elem-page-header">div2</div>
+            <div class="elem-page-header">提示框</div>
+            <div class="elem-page-content">
+                <p>鼠标放在<span class="elem-tooltip-trigger" data-tooltip="tooltipWindow">这里</span>会有提示</p>
+                <div id="tooltipWindow" class="elem-tooltip-window">努力啊少年！</div>
+                <p>这里应该会被挡住</p>
+            </div>
         </div>
     </div>
     <script src= '/javascripts/jquery-3.2.1.min.js' type="text/javascript"></script>
