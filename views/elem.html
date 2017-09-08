@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
     <link rel='stylesheet', href='/stylesheets/elem.css'>
+    <link rel='stylesheet', href='/stylesheets/temp.css'>
 </head>
 <body>
     <div class="elem-2col-left">
@@ -9,6 +10,7 @@
             <ul class="elem-sidebar-nav">
                 <li class="active" data-show="div1">1-拖拽</li>
                 <li data-show="div2">2-提示框</li>
+                <li data-show="div3">3-轮播</li>
             </ul>
         </div>
     </div>
@@ -25,6 +27,29 @@
                 <p>鼠标放在<span class="elem-tooltip-trigger" data-tooltip="tooltipWindow">这里</span>会有提示</p>
                 <div id="tooltipWindow" class="elem-tooltip-window">努力啊少年！</div>
                 <p>这里应该会被挡住</p>
+            </div>
+        </div>
+        <div id="div3" class="elem-page">
+            <div class="elem-page-header">轮播</div>
+            <div class="elem-page-content">
+                <div class="elem-carousel" data-interval="3000">
+                    <ul class="elem-carousel-index">
+                        <li data-show="caro1" class="active"></li>
+                        <li data-show="caro2"></li>
+                        <li data-show="caro3"></li>
+                    </ul>
+                    <div class="elem-carousel-list">
+                        <div id="caro1" class="active">
+                            <div class="countNum">1</div>
+                        </div>
+                        <div id="caro2">
+                            <div class="countNum">2</div>
+                        </div>
+                        <div id="caro3">
+                            <div class="countNum">3</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

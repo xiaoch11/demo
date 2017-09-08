@@ -1,0 +1,9 @@
+.countNum {
+    width: 100%;
+    height: 100%;
+    font-size: 50px;
+    color: #fff500;
+    text-align: center;
+    padding: 20px 0px;
+    background-color: rgba(43, 126, 226, 0.46);
+}
