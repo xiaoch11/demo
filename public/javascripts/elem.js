@@ -134,6 +134,11 @@ function initCarousel() {
     setAutoSlide(parseInt(carousel.attr('data-interval')));
 }
 
+function drawLoading() {
+    var container = $('.elem-loadingAnim');
+    container.append($('<canvas id="elem-loadingCanvas"></canvas>'));
+}
+
 $(document).ready(function() {
     initSidebar();
     initDragIem();
