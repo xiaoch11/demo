@@ -22,6 +22,12 @@ function initSidebar() {
     function spyOff() {
         $(window).unbind('scroll');
     }
+    
+    var spyDiv = $('.elem-sidebar').attr('data-scrollSpy');
+    if(spyDiv) {
+        checkView(spyDiv);
+        spyOn(spyDiv);
+    }
 
     // 切换页面
     $('.elem-sidebar-nav li').click(function() {
@@ -30,14 +36,8 @@ function initSidebar() {
         sidebarToActive(showId);
         $('body').animate({
             scrollTop: $(`#${showId}`).offset().top
-        }, 'normal', 'linear', spyOn());
+        }, 'normal', 'linear', spyOn(spyDiv));
     });
-    
-    var spyDiv = $('.elem-sidebar').attr('data-scrollSpy');
-    if(spyDiv) {
-        checkView(spyDiv);
-        spyOn(spyDiv);
-    }
 }
 
 /* 组件-dragItem */
@@ -99,6 +99,7 @@ function initCarousel() {
     var carousel = $('.elem-carousel');
     var caroIndex = $('.elem-carousel-index');
     var caroList = $('.elem-carousel-list');
+    var cnt = 0;
 
     function setWidth() {
         var listSize = caroList.children().length;
@@ -119,7 +120,6 @@ function initCarousel() {
     }
 
     function setAutoSlide(time) {
-        var cnt = 0;
         var listSize = caroList.children().length;
         var autoSlide = setInterval(function() {
             cnt = (cnt + 1)%listSize;
@@ -129,6 +129,7 @@ function initCarousel() {
 
     setWidth();
     caroIndex.children().click(function() {
+        cnt = $(this).index();
         caroToActive($(this).attr('data-show'));
     });
     setAutoSlide(parseInt(carousel.attr('data-interval')));
