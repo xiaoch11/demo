@@ -1,3 +1,23 @@
+function isObject(obj) {
+    return Object.prototype.toString.call(obj) == '[object Object]';
+}
+
+function extend(defaultOptions, options) {
+    var option;
+    for (option in defaultOptions) {
+        if (options.hasOwnProperty(option)) {
+            if (isObject(defaultOptions[option])&&isObject(options[option])) {
+                extend(defaultOptions[option], options[option]);
+            }
+        }
+        else {
+            options[option] = defaultOptions[option];
+        }
+    }
+    return options;
+}
+
+
 /* 组件-sidebar */
 function initSidebar() {
     function sidebarToActive(showId) {
@@ -135,9 +155,47 @@ function initCarousel() {
     setAutoSlide(parseInt(carousel.attr('data-interval')));
 }
 
-function drawLoading() {
-    var container = $('.elem-loadingAnim');
-    container.append($('<canvas id="elem-loadingCanvas"></canvas>'));
+/* 组件-loading动画 */
+function Loading(div, options) {
+    div.append($('<canvas class="elem-loadingCanvas"></canvas>'));
+    var defaultOptions = {
+        radiusBig: 50,
+        radiusSmall: 5,
+        coreX: 60,
+        coreY: 60,
+        internal: Math.PI/6,
+        num: 9
+    };
+    this.options = extend(defaultOptions, options);
+}
+
+Loading.prototype.drawLoading = function() {
+    var canvasList = $('.elem-loadingCanvas');
+
+    function drawCircle(ctx, x, y, r, fillStyle, globalAlpha) {
+        ctx.fillStyle = fillStyle;
+        ctx.globalAlpha = globalAlpha;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI*2, true);
+        ctx.closePath();
+        ctx.fill();
+    }
+    function draw(ctx, options) {
+        for (var j = 0; j < options.num; j++) {
+            var angle = j * options.internal;
+            drawCircle(ctx, options.radiusBig * Math.cos(angle), 0 - options.radiusBig * Math.sin(angle), options.radiusSmall, 'blue', (options.num - j)/options.num);
+        };
+    }
+
+    for (var i = 0; i < canvasList.length; i++) {
+        var options = this.options;
+        canvasList[i].setAttribute('width', 2*options.coreX + 'px');
+        canvasList[i].setAttribute('height', 2*options.coreY + 'px');
+        var ctx = canvasList[i].getContext('2d');
+
+        ctx.translate(options.coreX, options.coreY);
+        draw(ctx, options);
+    }
 }
 
 $(document).ready(function() {
@@ -145,4 +203,8 @@ $(document).ready(function() {
     initDragIem();
     initTooltip();
     initCarousel();
+
+    // 可外部调用
+    var loading = new Loading($('.elem-loadingAnim'), {});
+    loading.drawLoading();
 });

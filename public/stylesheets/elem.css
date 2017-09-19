@@ -136,6 +136,20 @@ body {
     float: left;
 }
 
+/* 组件-loading动画 */
+@keyframes rotate {
+    0% {transform: rotate(0deg);}
+/*    25% {transform: rotate(90deg);}
+    50% {transform: rotate(180deg);}
+    75% {transform: rotate(270deg);}*/
+    100% {transform: rotate(360deg);}
+}
+
+.elem-loadingCanvas {
+    animation: rotate 2s;
+    animation-iteration-count: infinite;
+}
+
 /* 样式 */
 .elem-page {
     margin: 10px 30px;
