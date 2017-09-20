@@ -94,28 +94,62 @@ body {
 
 /* 组件-menuPopup */
 .elem-menuPopup-trigger {
-    cursor: pointer;
-    color: #F49819;
+/*    cursor: pointer;
+    color: #F49819;*/
 }
 
 .elem-menuPopup-menu {
     position: absolute;
     left: 50px;
     top: 50px;
-/*    visibility: hidden;*/
+    visibility: hidden;
     padding: 5px 15px;
     background: rgba(0, 0, 0, 0.6);
     border-radius: 2px;
 }
 
-.elem-menuPopup-menu:after {
+.elem-menuPopup-menu.bottom:after {
     border: solid transparent;
     border-bottom-color: rgba(0, 0, 0, 0.6);
     border-width: 10px;
     content: " ";
     position: absolute;
-    left: 10px;
+    left: 50%;
     top: -20px;
+    margin-left: -10px;
+}
+
+.elem-menuPopup-menu.top:after {
+    border: solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.6);
+    border-width: 10px;
+    content: " ";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    margin-left: -10px;
+}
+
+.elem-menuPopup-menu.right:after {
+    border: solid transparent;
+    border-right-color: rgba(0, 0, 0, 0.6);
+    border-width: 10px;
+    content: " ";
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    margin-top: -10px;
+}
+
+.elem-menuPopup-menu.left:after {
+    border: solid transparent;
+    border-left-color: rgba(0, 0, 0, 0.6);
+    border-width: 10px;
+    content: " ";
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    margin-top: -10px;
 }
 
 .elem-menuPopup-menu li {
@@ -126,6 +160,8 @@ body {
     letter-spacing: 0;
     line-height: 12px;
     padding: 5px;
+    max-width: 250px;
+    text-overflow: ellipsis;
 }
 
 /* 组件-carousel */

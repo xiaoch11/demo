@@ -56,7 +56,9 @@ function initSidebar() {
         sidebarToActive(showId);
         $('body').animate({
             scrollTop: $(`#${showId}`).offset().top
-        }, 'normal', 'linear', spyOn(spyDiv));
+        }, 'normal', 'linear', function() {
+            spyOn(spyDiv);
+        });
     });
 }
 
@@ -114,19 +116,104 @@ function initTooltip() {
     });
 }
 
-function MenuPopup($el, options) {
+function MenuPopup(trigger, options) {
     var defaultOptions = {
-        position: 'bottom',
-        offset: '10px',
-        render: function() {},
-        cb: function() {},
-        triggerClass: 'elem-menuPopup-trigger',
-        windowClass: 'elem-menuPopup-window',
-        ulClass: 'elem-menuPopup-ul'
+        style: {
+            position: 'bottom',
+            offset: 10,
+            triggerClass: 'elem-menuPopup-trigger',
+            menuClass: 'elem-menuPopup-menu'
+        },
+        render: {
+            way: 'elem', // data or elem
+            data: [],
+            createElem: function(data, trigger) {
+                var ul = $('<ul></ul>');
+                for (var i = 0; i < data.length; i++) {
+                    var li = $('<li></li>').text(data[i]);
+                    ul.append(li);
+                }
+                // $('body').append(ul);
+                return ul;
+            },
+            cb: function(menu) {},
+        }
     }
     this.options = extend(defaultOptions, options);
-    this.el = $el;
+    this.trigger = trigger;
 }
+
+MenuPopup.prototype.renderMenu = function() {
+    var render = this.options.render;
+    var style = this.options.style;
+    var trigger = this.trigger;
+    var menu = null;
+
+    // 生成menu
+    if(render.way == 'data') {
+        menu = render.createElem(render.data, trigger);
+    } else if(render.way == 'elem') {
+        menu = $(`#${this.trigger.attr('data-menuPopup')}`);
+    }
+    this.menu = menu;
+
+    // 调用cb()
+    render.cb(menu);
+
+    // 设置样式
+    trigger.addClass(style.triggerClass);
+    menu.addClass(style.menuClass);
+    trigger.append(menu);
+    function setPosition(style, trigger, menu) {
+        var triggerPos = {
+            x: trigger.offset().left,
+            y: trigger.offset().top,
+            h: trigger.innerHeight(),
+            w: trigger.innerWidth()
+        };
+        var menuPos = {
+            x: menu.offset().left,
+            y: menu.offset().top,
+            h: menu.innerHeight(),
+            w: menu.innerWidth(),
+            left: parseFloat(menu.css('left')),
+            top: parseFloat(menu.css('top'))
+        };
+
+        if(menu.css('position') != 'absolute') menu.css('position', 'absolute');
+        switch(style.position) {
+            case 'top':
+                menu.css('left', menuPos.left + triggerPos.x - menuPos.x - (menuPos.w - triggerPos.w)/2);
+                menu.css('top', menuPos.top + triggerPos.y - menuPos.y - menuPos.h - style.offset);
+                menu.addClass('top');
+                break;
+            case 'right':
+                menu.css('left', menuPos.left + triggerPos.x - menuPos.x + triggerPos.w + style.offset);
+                menu.css('top', menuPos.top + triggerPos.y - menuPos.y - (menuPos.h - triggerPos.h)/2);
+                menu.addClass('right');
+                break;
+            case 'left':
+                menu.css('left', menuPos.left + triggerPos.x - menuPos.x - menuPos.w - style.offset);
+                menu.css('top', menuPos.top + triggerPos.y - menuPos.y - (menuPos.h - triggerPos.h)/2);
+                menu.addClass('left');
+                break;
+            default:
+                menu.css('left', menuPos.left + triggerPos.x - menuPos.x - (menuPos.w - triggerPos.w)/2);
+                menu.css('top', menuPos.top + triggerPos.y - menuPos.y + triggerPos.h + style.offset);
+                menu.addClass('bottom');
+        }
+    }
+
+    // setStyle(style, trigger, menu);
+    trigger.mouseover(function(event) {
+        setPosition(style, trigger, menu);
+        menu.css('visibility', 'visible');
+        trigger.mouseout( function(event) {
+            menu.css('visibility', 'hidden');
+        });
+    });
+}
+
 
 /* 组件-carousel */
 function initCarousel() {
