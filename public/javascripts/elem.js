@@ -114,6 +114,20 @@ function initTooltip() {
     });
 }
 
+function MenuPopup($el, options) {
+    var defaultOptions = {
+        position: 'bottom',
+        offset: '10px',
+        render: function() {},
+        cb: function() {},
+        triggerClass: 'elem-menuPopup-trigger',
+        windowClass: 'elem-menuPopup-window',
+        ulClass: 'elem-menuPopup-ul'
+    }
+    this.options = extend(defaultOptions, options);
+    this.el = $el;
+}
+
 /* 组件-carousel */
 function initCarousel() {
     var carousel = $('.elem-carousel');
