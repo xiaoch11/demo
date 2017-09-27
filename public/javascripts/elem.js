@@ -257,8 +257,7 @@ function initCarousel() {
 }
 
 /* 组件-loading动画 */
-function Loading(div, options) {
-    div.append($('<canvas class="elem-loadingCanvas"></canvas>'));
+function Loading(container, options) {
     var defaultOptions = {
         radiusBig: 50,
         radiusSmall: 5,
@@ -267,11 +266,17 @@ function Loading(div, options) {
         internal: Math.PI/6,
         num: 9
     };
+    
+    var canvas = $('<canvas class="elem-loadingCanvas"></canvas>');
+    container.append(canvas);
+    this.container = container;
+    this.canvas = canvas;
     this.options = extend(defaultOptions, options);
 }
 
 Loading.prototype.drawLoading = function() {
-    var canvasList = $('.elem-loadingCanvas');
+    var canvas = this.canvas;
+    var options = this.options;
 
     function drawCircle(ctx, x, y, r, fillStyle, globalAlpha) {
         ctx.fillStyle = fillStyle;
@@ -287,16 +292,70 @@ Loading.prototype.drawLoading = function() {
             drawCircle(ctx, options.radiusBig * Math.cos(angle), 0 - options.radiusBig * Math.sin(angle), options.radiusSmall, 'blue', (options.num - j)/options.num);
         };
     }
+ 
+    canvas.attr('width', 2*options.coreX + 'px');
+    canvas.attr('height', 2*options.coreY + 'px');
+    var ctx = canvas[0].getContext('2d');
 
-    for (var i = 0; i < canvasList.length; i++) {
-        var options = this.options;
-        canvasList[i].setAttribute('width', 2*options.coreX + 'px');
-        canvasList[i].setAttribute('height', 2*options.coreY + 'px');
-        var ctx = canvasList[i].getContext('2d');
+    ctx.translate(options.coreX, options.coreY);
+    draw(ctx, options);
+}
 
-        ctx.translate(options.coreX, options.coreY);
-        draw(ctx, options);
+/* 组件-Three */
+function Three(container, options) {
+    var defaultOptions = {
+        width: 600,
+        height: 300
+    };
+    this.options = extend(defaultOptions, options);
+    // 创建场景
+    var scene = new THREE.Scene();
+    // 创建相机
+    var camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+    // 创建渲染器
+    var renderer = new THREE.WebGLRenderer();
+    
+    // 设置场景大小，并添加到页面中
+    renderer.setSize(this.options.width, this.options.height);
+    container.append(renderer.domElement);
+    renderer.setClearColor(0xffffff, 1.0);
+    this.main = {
+        scene: scene,
+        camera: camera,
+        renderer: renderer
     }
+    this.main = {};
+    this.objects = [];
+}
+
+Three.prototype.initThree = function() {
+    
+}
+
+Three.prototype.addObject = function(type) {
+    // 向场景中添加物体
+    // 创建几何体
+    if(type === 'cube') {
+        var geometry = new THREE.CubeGeometry(1,1,1);
+        var material = new THREE.MeshBasicMaterial({color: 0x666666});
+        var cube = new THREE.Mesh(geometry, material);
+        this.main.scene.add(cube);
+        this.objects.push(cube);
+    }
+}
+
+Three.prototype.renderThree = function() {
+    var main = this.main;
+    var cube = this.objects[0];
+    main.camera.position.z = 5;
+    // 渲染
+    function render() {
+        requestAnimationFrame(render);
+        cube.rotation.x += 0.1;
+        cube.rotation.y += 0.1;
+        main.renderer.render(main.scene, main.camera); 
+    }
+    render();
 }
 
 $(document).ready(function() {
@@ -304,8 +363,4 @@ $(document).ready(function() {
     initDragIem();
     initTooltip();
     initCarousel();
-
-    // 可外部调用
-    var loading = new Loading($('.elem-loadingAnim'), {});
-    loading.drawLoading();
 });
