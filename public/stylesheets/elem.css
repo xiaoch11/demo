@@ -56,6 +56,14 @@ body {
     top: 0;
 }
 
+/* 组件-dragList */
+.elem-dragList li {
+    cursor: pointer;
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
 /* 组件-tooltip */
 .elem-tooltip-trigger {
     cursor: pointer;
@@ -245,4 +253,21 @@ body {
     height: 50px;
     border-radius: 10px;
     border: 2px solid blue;
+}
+
+.elem-list {
+    padding: 10px;
+}
+
+.elem-list li {
+    list-style-type: none;
+    width: 100px;
+    height: 20px;
+    border: 2px solid blue;
+    border-radius: 5px;
+    text-align: center;
+    padding: 4px 5px;
+    margin: 5px;
+    line-height: 20px;
+    background: #fff;
 }

@@ -70,10 +70,10 @@ function initDragIem() {
         var originX = event.pageX;
         var originY = event.pageY;
         $(document).mousemove(function(event) {
-            var desX = event.pageX - originX;
-            var desY = event.pageY - originY;
-            target.css('left', left + desX);
-            target.css('top', top + desY);
+            var disX = event.pageX - originX;
+            var disY = event.pageY - originY;
+            target.css('left', left + disX);
+            target.css('top', top + disY);
         });
         $(document).mouseup(function() {
             $(document).unbind('mousemove');
@@ -85,6 +85,54 @@ function initDragIem() {
 
     $('.elem-dragItem').mousedown(function(event) {
         dragStart($(this), event);
+    });
+}
+
+/* 组件-dragList */
+function initDragList() {
+    function dragStart(target, subs, event) {
+        var prev = target.prev();
+        var next = target.next();
+
+        var left = parseFloat(subs.css('left'));
+        var top = parseFloat(subs.css('top'));
+        var originX = event.pageX;
+        var originY = event.pageY;
+
+        $(document).mousemove(function(event) {
+            var disX = event.pageX - originX;
+            var disY = event.pageY - originY;
+
+            subs.css('left', left + disX);
+            subs.css('top', top + disY);
+            console.log(event.pageY);
+            console.log(next[0].offsetTop + next.innerWidth()/2);
+            if(event.pageY > next[0].offsetTop + next.innerWidth()/2) {
+                target.remove();
+                next.after(target);
+                prev = target.prev();
+                next = target.next();
+            }
+        });
+        $(document).mouseup(function() {
+            $(document).unbind('mousemove');
+            setTimeout(function(){
+                $(document).unbind('mouseup');
+            }, 0);
+        });
+    }
+
+    $('.elem-dragList li').mousedown(function(event) {
+        function cloneTarget(target) {
+            var subs = target.clone();
+            subs.css('z-index', '2');
+            subs.css('float', 'left');
+            target.before(subs);
+            target.css('visibility', 'hidden');
+            return subs;
+        }
+        var subs = cloneTarget($(this));
+        dragStart($(this), subs, event);
     });
 }
 
@@ -305,62 +353,88 @@ Loading.prototype.drawLoading = function() {
 function Three(container, options) {
     var defaultOptions = {
         width: 600,
-        height: 300
+        height: 300,
+        camera: {
+            fov: 75,
+            aspect: 2,
+            near: 0.1,
+            far: 1000
+        }
     };
-    this.options = extend(defaultOptions, options);
+    options = extend(defaultOptions, options);
     // 创建场景
     var scene = new THREE.Scene();
     // 创建相机
-    var camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+    var camera = new THREE.PerspectiveCamera(options.camera.fov, options.camera.aspect, options.camera.near, options.camera.far);
     // 创建渲染器
     var renderer = new THREE.WebGLRenderer();
-    
+
     // 设置场景大小，并添加到页面中
-    renderer.setSize(this.options.width, this.options.height);
+    renderer.setSize(options.width, options.height);
     container.append(renderer.domElement);
-    renderer.setClearColor(0xffffff, 1.0);
     this.main = {
         scene: scene,
         camera: camera,
         renderer: renderer
     }
-    this.main = {};
     this.objects = [];
+    this.options = options;
 }
 
-Three.prototype.initThree = function() {
-    
-}
-
-Three.prototype.addObject = function(type) {
+Three.prototype.addObject = function(type, options) {
     // 向场景中添加物体
-    // 创建几何体
-    if(type === 'cube') {
-        var geometry = new THREE.CubeGeometry(1,1,1);
-        var material = new THREE.MeshBasicMaterial({color: 0x666666});
-        var cube = new THREE.Mesh(geometry, material);
-        this.main.scene.add(cube);
-        this.objects.push(cube);
+    var geometry;
+    var material;
+    var object = null;
+    if(type === 'cube') { // 创建几何体
+        geometry = new THREE.CubeGeometry(options.x, options.y, options.z);
+        material = new THREE.MeshLambertMaterial({color: options.color});
+        object = new THREE.Mesh(geometry, material);
+    } else if(type === 'line') { // 创建直线
+        geometry = new THREE.Geometry();  // 声明了一个几何体geometry，几何体里面有一个vertices变量，可以用来存放点
+        material = new THREE.LineBasicMaterial(options.material);  // 定义线条的材质
+        var p1 = new THREE.Vector3(options.point1.x, options.point1.y, options.point1.z);  // 定义两个顶点的位置
+        var p2 = new THREE.Vector3(options.point2.x, options.point2.y, options.point2.z);
+        geometry.vertices.push(p1);
+        geometry.vertices.push(p2);
+        if(options.material.vertexColors) {
+            geometry.colors.push(new THREE.Color(0x444444), new THREE.Color(0xFF0000));
+        }
+        object = new THREE.Line(geometry, material, THREE.Segments);
+    } else if(type === 'directionalLight') {
+        object = new THREE.DirectionalLight(options.hex, options.intensity);
+        object.position.set(options.position.x, options.position.y, options.position.z);
+    }
+    if(object) {
+        this.main.scene.add(object);
+        this.objects.push(object);
     }
 }
 
-Three.prototype.renderThree = function() {
+Three.prototype.initCamera = function(options) {
+    var defaultOptions = {
+        position: {
+            x: 0,
+            y: 0,
+            z: 10
+        }
+    };
+    var ops = extend(defaultOptions, options);
+    var camera = this.main.camera;
+    camera.position.set(options.position.x, options.position.y, options.position.z);
+}
+
+Three.prototype.renderThree = function(render) {
     var main = this.main;
-    var cube = this.objects[0];
-    main.camera.position.z = 5;
-    // 渲染
-    function render() {
-        requestAnimationFrame(render);
-        cube.rotation.x += 0.1;
-        cube.rotation.y += 0.1;
-        main.renderer.render(main.scene, main.camera); 
-    }
-    render();
+    var objects = this.objects;
+
+    render(objects, main);
 }
 
 $(document).ready(function() {
     initSidebar();
     initDragIem();
+    initDragList()
     initTooltip();
     initCarousel();
 });

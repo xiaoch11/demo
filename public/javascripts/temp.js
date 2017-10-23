@@ -1,12 +1,52 @@
-
-
 $(document).ready(function() {
-	// var three = new Three();
-	// three.initThree();
-	// three.addObject('cube');
-	//three.renderThree();
+    var three = new Three($('#webGL'), {
+        width: 400,
+        height: 200,
+        camera: {
+            fov: 90,
+            aspect: 2,
+            near: 1,
+            far: 1000
+        }
+    });
+    three.addObject('cube', {
+        x: 10,
+        y: 10,
+        z: 10,
+        color: '#fff'
+    });
+    three.addObject('directionalLight', {
+        hex: 0xff00000,
+        intensity: 1,
+        position: {
+            x: 20,
+            y: 20,
+            z: 20
+        }
+    });
+    three.initCamera({
+        position: {
+            x: 0,
+            y: 0,
+            z: 20
+        }
+    });
+    three.renderThree(function(objects, main) {
+        main.renderer.setClearColor(0xffffff, 1.0);
+        var cube = objects[0];
+        // var tween = new TWEEN.Tween(cube.position).to({x: -50}, 2000).repeat(Infinity).start();
 
-	// 加载动画
+        function animation() {
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            main.renderer.render(main.scene, main.camera);
+            requestAnimationFrame(animation);
+            // tween.update();
+        }
+        animation();
+    });
+
+    // 加载动画
     var loading = new Loading($('#elem-loadingAnim'), {});
     loading.drawLoading();
 
