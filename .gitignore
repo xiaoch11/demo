@@ -1,3 +1,4 @@
 node_modules/
 nohup.out
 test.js
+.DS_Store

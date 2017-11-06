@@ -1,3 +1,0 @@
-#set( $iAmVariable = "good!" )
-Welcome $name to velocity.com
-today is $date.

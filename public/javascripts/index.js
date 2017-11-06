@@ -1,41 +1,49 @@
-window.addEventListener("load", function(){
-    console.log("global listener");
-    var last = getCookie('last');
-    if (last == "") {
-    	setCookie('last');
-    	console.log("setCookie called");
+var setGetUserMedia = function() {
+    //处理无法兼容情况
+
+    //不支持mediaDevices属性
+    if (navigator.mediaDevices === undefined) {
+      navigator.mediaDevices = {};
     }
-    else {
-    	console.log(last);
-    }
-});
 
-window.testEvent = function() {
-	console.log("Mouseover event listener");
-}
+    //不支持mediaDevices.getUserMedia
+    if (navigator.mediaDevices.getUserMedia === undefined) {
+        navigator.mediaDevices.getUserMedia = function(constraints) {
+            var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            
+            if(!getUserMedia) {
+                return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+            }
+            
+            return new Promise(function(resolve, reject) {
+                getUserMedia.call(navigator, constraints, resolve, reject);
+            });
+        }
+    }  
+};
 
-window.testXML = function() {
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", '/', false);
-	xmlhttp.send(null);
-}
+var useStream = function(constraints) {
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(function(stream) {
+        var video = document.querySelector("#video");
+        //判断浏览器是否支持srcObject
+        if ("srcObject" in video) {
+            video.srcObject = stream;
+        } else {
+            //旧方案
+            video.src = window.URL.createObjectURL(stream);
+        }
+        // video.onloadedmetadata = function(e) {
+        //     video.play();
+        // };
+    }).catch(function(err) {
+        alert(err.name + ": " + err.message);
+    });
+};
 
-function setCookie(keyName) {
-	var _date = new Date();
-	var value = _date.toString();
-	_date.setDate(_date.getDate() + 1);
-	document.cookie = keyName + "=" + value + "; expires=" + _date.toGMTString();
-}
+var constraints = {
+    video: true
+};
 
-function getCookie(keyName) {
-	if (document.cookie.length > 0) {
-		var start = document.cookie.indexOf(keyName);
-		if (start != -1) {
-			start = start + keyName.length + 1;
-			end = document.cookie.indexOf(";", start);
-			if (end == -1) { end = document.cookie.length; }
-			return unescape(document.cookie.substring(start, end));
-		}
-	}
-	return "";
-}
+setGetUserMedia();
+useStream(constraints);
